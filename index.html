@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verbos Irregulares - Grupo 1 (E -> IE)</title>
+  <style>
+    :root {
+      --bg-color: #2b3a42;
+      --box-bg: #3f51b5;
+      --box-border: #303f9f;
+      --card-bg: #ffffff;
+      --text-main: #1f2937;
+      --ie-color: #e53935; /* Rojo para la irregularidad ie */
+      --stem-color: #facc15; /* Raíz amarilla base */
+      --green-piece: #22c55e;
+      --green-border: #15803d;
+      --pronoun-color: #1565c0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      min-height: 100vh;
+      padding: 20px;
+      color: #ffffff;
+    }
+
+    /* BANNER SUPERIOR CON EL CONCEPTO CLAVE */
+    .concept-header {
+      background: linear-gradient(135deg, #ff5252, #ff793f);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      max-width: 1200px;
+      margin: 0 auto 25px auto;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .concept-title {
+      font-size: 1.8rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .concept-rule {
+      font-size: 1.2rem;
+      margin-top: 8px;
+      background: rgba(0,0,0,0.2);
+      display: inline-block;
+      padding: 6px 18px;
+      border-radius: 20px;
+    }
+
+    .concept-rule span {
+      color: #fff176;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    /* CONTENEDOR PRINCIPAL: CAJA Y ÁREA DE CONJUGACIÓN */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ESTILO DE LA CAJA CONTENEDORA DE VERBOS */
+    .box-container {
+      background-color: #1e293b;
+      border: 4px solid #475569;
+      border-radius: 20px;
+      padding: 20px;
+      min-height: 500px;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    .box-header {
+      background-color: var(--box-bg);
+      border: 2px solid var(--box-border);
+      color: white;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .verbs-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      align-content: flex-start;
+    }
+
+    .verb-card {
+      background-color: #ffffff;
+      color: var(--text-main);
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 2px solid #cbd5e1;
+    }
+
+    .verb-card:hover {
+      transform: scale(1.1) translateY(-3px);
+      background-color: #fef08a;
+      z-index: 5;
+    }
+
+    .verb-card.active {
+      background-color: #ff793f;
+      color: #ffffff;
+      border-color: #d32f2f;
+      transform: scale(1.05);
+    }
+
+    /* ÁREA DE TRABAJO (TABLA DE CONJUGACIÓN) */
+    .workspace {
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .workspace-header {
+      text-align: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .selected-title {
+      font-size: 2rem;
+      font-weight: 900;
+    }
+
+    .conjugation-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 130px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      background-color: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .pronoun {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--pronoun-color);
+    }
+
+    /* COMPONENTE INTERACTIVO DE CONJUGACIÓN */
+    .puzzle-box {
+      cursor: pointer;
+    }
+
+    .puzzle-svg {
+      display: block;
+      overflow: visible;
+      filter: drop-shadow(0px 3px 4px rgba(0, 0, 0, 0.12));
+    }
+
+    .text-stem {
+      fill: #1f2937;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-weight: 900;
+      font-size: 17px;
+      dominant-baseline: central;
+      text-anchor: middle;
+    }
+
+    /* Resaltado del cambio E -> IE */
+    .ie-highlight {
+      fill: var(--ie-color);
+      font-weight: 900;
+    }
+
+    .text-ending {
+      fill: #ffffff;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-weight: 900;
+      font-size: 17px;
+      dominant-baseline: central;
+      text-anchor: middle;
+      transition: opacity 0.25s ease;
+    }
+
+    .text-hidden {
+      opacity: 0;
+    }
+
+    /* BOTÓN AUDIO */
+    .audio-btn {
+      background: #e2e8f0;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .audio-btn:hover {
+      background-color: #facc15;
+      transform: scale(1.1);
+    }
+
+    @media (max-width: 900px) {
+      .main-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="concept-header">
+    <div class="concept-title">GRUPO 1: VERBOS IRREGULARES</div>
+    <div class="concept-rule">
+      Cambio Vocálico: Cambia la <span>E</span> por <span>IE</span> en la raíz (excepto en Nosotros y Vosotros)
+    </div>
+  </div>
+
+  <div class="main-layout">
+    
+    <div class="box-container">
+      <div class="box-header">📦 CAJA DEL GRUPO 1 (E ➔ IE)</div>
+      <div class="verbs-grid" id="boxVerbs"></div>
+    </div>
+
+    <div class="workspace">
+      <div class="workspace-header">
+        <div class="selected-title" id="selectedVerbTitle">PENSAR</div>
+      </div>
+
+      <div class="conjugation-grid" id="conjugationGrid"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // Lista completa de verbos del Grupo 1 extraídos de las diapositivas
+    const verbosGrupo1 = [
+      { verbo: "PENSAR", tipo: "AR", raizBase: "pens", prefijo: "p", e_pos: "e", sufijo: "ns" },
+      { verbo: "CERRAR", tipo: "AR", raizBase: "cerr", prefijo: "c", e_pos: "e", sufijo: "rr" },
+      { verbo: "COMENZAR", tipo: "AR", raizBase: "comenz", prefijo: "com", e_pos: "e", sufijo: "nz" },
+      { verbo: "EMPEZAR", tipo: "AR", raizBase: "empez", prefijo: "emp", e_pos: "e", sufijo: "z" },
+      { verbo: "ENTENDER", tipo: "ER", raizBase: "entend", prefijo: "ent", e_pos: "e", sufijo: "nd" },
+      { verbo: "QUERER", tipo: "ER", raizBase: "quer", prefijo: "qu", e_pos: "e", sufijo: "r" },
+      { verbo: "PERDER", tipo: "ER", raizBase: "perd", prefijo: "p", e_pos: "e", sufijo: "rd" },
+      { verbo: "PREFERIR", tipo: "IR", raizBase: "prefer", prefijo: "pref", e_pos: "e", sufijo: "r" },
+      { verbo: "SENTIR", tipo: "IR", raizBase: "sent", prefijo: "s", e_pos: "e", sufijo: "nt" },
+      { verbo: "MENTIR", tipo: "IR", raizBase: "ment", prefijo: "m", e_pos: "e", sufijo: "nt" },
+      { verbo: "DESPERTAR", tipo: "AR", raizBase: "despert", prefijo: "desp", e_pos: "e", sufijo: "rt" }
+    ];
+
+    const pronombres = ["Yo", "Tú", "Él / Ella / Usted", "Nosotros/as", "Vosotros/as", "Ellos / Ellas / Ustedes"];
+
+    const terminaciones = {
+      AR: ["-o", "-as", "-a", "-amos", "-áis", "-an"],
+      ER: ["-o", "-es", "-e", "-emos", "-éis", "-en"],
+      IR: ["-o", "-es", "-e", "-imos", "-ís", "-en"]
+    };
+
+    let selectedVerb = verbosGrupo1[0];
+
+    // Cargar tarjetas dentro de la Caja
+    function renderBox() {
+      const box = document.getElementById('boxVerbs');
+      box.innerHTML = '';
+
+      verbosGrupo1.forEach((v) => {
+        const card = document.createElement('div');
+        card.className = 'verb-card' + (v.verbo === selectedVerb.verbo ? ' active' : '');
+        card.textContent = v.verbo;
+
+        card.onclick = () => {
+          selectedVerb = v;
+          renderBox();
+          updateConjugation();
+        };
+
+        box.appendChild(card);
+      });
+    }
+
+    // Dibujar el tablero de conjugación con los cambios E -> IE
+    function updateConjugation() {
+      document.getElementById('selectedVerbTitle').textContent = `${selectedVerb.verbo} (-${selectedVerb.tipo})`;
+
+      const grid = document.getElementById('conjugationGrid');
+      grid.innerHTML = '';
+
+      pronombres.forEach((pronombre, i) => {
+        const isNosotrosOrVosotros = (i === 3 || i === 4); // Nosotros (3) y Vosotros (4) NO cambian
+        const ending = terminaciones[selectedVerb.tipo][i];
+
+        // Construir la palabra hablada completa para la función audio
+        const raizCompleta = isNosotrosOrVosotros ? selectedVerb.raizBase : (selectedVerb.prefijo + "ie" + selectedVerb.sufijo);
+        const fullWord = raizCompleta + ending.replace('-', '');
+
+        const row = document.createElement('div');
+        row.className = 'row';
+
+        // Representación visual de la raíz con cambio de color en IE
+        let raizSVGHtml = '';
+        if (isNosotrosOrVosotros) {
+          raizSVGHtml = `<tspan class="text-stem">${selectedVerb.raizBase}-</tspan>`;
+        } else {
+          raizSVGHtml = `<tspan class="text-stem">${selectedVerb.prefijo}</tspan>` +
+                        `<tspan class="ie-highlight">ie</tspan>` +
+                        `<tspan class="text-stem">${selectedVerb.sufijo}-</tspan>`;
+        }
+
+        row.innerHTML = `
+          <div class="pronoun">${pronombre}</div>
+          <div class="puzzle-box" onclick="togglePiece(${i})">
+            <svg class="puzzle-svg" width="230" height="45" viewBox="0 0 230 45">
+              <path d="M 5,4 L 110,4 
+                       C 110,13 123,13 123,4 
+                       L 130,4 
+                       A 4,4 0 0,1 134,8 
+                       L 134,16 
+                       C 144,16 144,29 134,29 
+                       L 134,38 
+                       A 4,4 0 0,1 130,42 
+                       L 5,42 
+                       A 4,4 0 0,1 1,38 
+                       L 1,8 
+                       A 4,4 0 0,1 5,4 Z" 
+                    fill="#facc15" stroke="#eab308" stroke-width="2"/>
+              <text x="65" y="23" dominant-baseline="central" text-anchor="middle">${raizSVGHtml}</text>
+
+              <path d="M 130,4 L 220,4 
+                       A 4,4 0 0,1 224,8 
+                       L 224,38 
+                       A 4,4 0 0,1 220,42 
+                       L 130,42 
+                       A 4,4 0 0,1 126,38 
+                       L 126,29 
+                       C 136,29 136,16 126,16 
+                       L 126,8 
+                       A 4,4 0 0,1 130,4 Z" 
+                    fill="#22c55e" stroke="#15803d" stroke-width="2"/>
+              <text x="175" y="23" class="text-ending text-hidden" id="ending-${i}">${ending}</text>
+            </svg>
+          </div>
+          <button class="audio-btn" title="Escuchar" onclick="speak('${pronombre} ${fullWord}')">🔊</button>
+        `;
+        grid.appendChild(row);
+      });
+    }
+
+    function togglePiece(index) {
+      const endingText = document.getElementById(`ending-${index}`);
+      if(endingText) endingText.classList.toggle('text-hidden');
+    }
+
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-ES';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    // Inicialización
+    renderBox();
+    updateConjugation();
+  </script>
+
+</body>
+</html>
