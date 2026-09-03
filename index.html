@@ -168,14 +168,15 @@
     }
 
     .card-back-icon {
-      font-size: 2.2rem;
-      margin-bottom: 4px;
+      font-size: 1.8rem;
+      margin-bottom: 2px;
     }
 
     .card-back-text {
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       font-weight: 800;
-      color: #334155;
+      color: #0f172a;
+      text-transform: uppercase;
     }
 
     .select-btn {
@@ -329,17 +330,17 @@
 
   <script>
     const verbosGrupo1 = [
-      { verbo: "PENSAR", tipo: "AR", raizBase: "pens", prefijo: "p", e_pos: "e", sufijo: "ns", icono: "🧠" },
-      { verbo: "CERRAR", tipo: "AR", raizBase: "cerr", prefijo: "c", e_pos: "e", sufijo: "rr", icono: "🚪" },
-      { verbo: "COMENZAR", tipo: "AR", raizBase: "comenz", prefijo: "com", e_pos: "e", sufijo: "nz", icono: "🏁" },
-      { verbo: "EMPEZAR", tipo: "AR", raizBase: "empez", prefijo: "emp", e_pos: "e", sufijo: "z", icono: "🚀" },
-      { verbo: "ENTENDER", tipo: "ER", raizBase: "entend", prefijo: "ent", e_pos: "e", sufijo: "nd", icono: "💡" },
-      { verbo: "QUERER", tipo: "ER", raizBase: "quer", prefijo: "qu", e_pos: "e", sufijo: "r", icono: "❤️" },
-      { verbo: "PERDER", tipo: "ER", raizBase: "perd", prefijo: "p", e_pos: "e", sufijo: "rd", icono: "🔍" },
-      { verbo: "PREFERIR", tipo: "IR", raizBase: "prefer", prefijo: "pref", e_pos: "e", sufijo: "r", icono: "⭐" },
-      { verbo: "SENTIR", tipo: "IR", raizBase: "sent", prefijo: "s", e_pos: "e", sufijo: "nt", icono: "🎭" },
-      { verbo: "MENTIR", tipo: "IR", raizBase: "ment", prefijo: "m", e_pos: "e", sufijo: "nt", icono: "🤥" },
-      { verbo: "DESPERTAR", tipo: "AR", raizBase: "despert", prefijo: "desp", e_pos: "e", sufijo: "rt", icono: "⏰" }
+      { verbo: "PENSAR", ingles: "To Think", tipo: "AR", raizBase: "pens", prefijo: "p", e_pos: "e", sufijo: "ns", icono: "🧠" },
+      { verbo: "CERRAR", ingles: "To Close", tipo: "AR", raizBase: "cerr", prefijo: "c", e_pos: "e", sufijo: "rr", icono: "🚪" },
+      { verbo: "COMENZAR", ingles: "To Begin", tipo: "AR", raizBase: "comenz", prefijo: "com", e_pos: "e", sufijo: "nz", icono: "🏁" },
+      { verbo: "EMPEZAR", ingles: "To Start", tipo: "AR", raizBase: "empez", prefijo: "emp", e_pos: "e", sufijo: "z", icono: "🚀" },
+      { verbo: "ENTENDER", ingles: "To Understand", tipo: "ER", raizBase: "entend", prefijo: "ent", e_pos: "e", sufijo: "nd", icono: "💡" },
+      { verbo: "QUERER", ingles: "To Want / Love", tipo: "ER", raizBase: "quer", prefijo: "qu", e_pos: "e", sufijo: "r", icono: "❤️" },
+      { verbo: "PERDER", ingles: "To Lose", tipo: "ER", raizBase: "perd", prefijo: "p", e_pos: "e", sufijo: "rd", icono: "🔍" },
+      { verbo: "PREFERIR", ingles: "To Prefer", tipo: "IR", raizBase: "prefer", prefijo: "pref", e_pos: "e", sufijo: "r", icono: "⭐" },
+      { verbo: "SENTIR", ingles: "To Feel", tipo: "IR", raizBase: "sent", prefijo: "s", e_pos: "e", sufijo: "nt", icono: "🎭" },
+      { verbo: "MENTIR", ingles: "To Lie", tipo: "IR", raizBase: "ment", prefijo: "m", e_pos: "e", sufijo: "nt", icono: "🤥" },
+      { verbo: "DESPERTAR", ingles: "To Wake Up", tipo: "AR", raizBase: "despert", prefijo: "desp", e_pos: "e", sufijo: "rt", icono: "⏰" }
     ];
 
     const pronombres = ["Yo", "Tú", "Él / Ella / Usted", "Nosotros/as", "Vosotros/as", "Ellos / Ellas / Ustedes"];
@@ -370,7 +371,7 @@
             </div>
             <div class="card-back">
               <span class="card-back-icon">${v.icono}</span>
-              <span class="card-back-text">${v.verbo}</span>
+              <span class="card-back-text">${v.ingles}</span>
             </div>
           </div>
         `;
