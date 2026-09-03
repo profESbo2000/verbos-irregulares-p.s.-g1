@@ -246,4 +246,236 @@
     .puzzle-svg {
       display: block;
       overflow: visible;
-      filter: drop-shadow
+      filter: drop-shadow(0px 3px 4px rgba(0, 0, 0, 0.12));
+    }
+
+    .text-stem {
+      fill: #1f2937;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-weight: 900;
+      font-size: 17px;
+      dominant-baseline: central;
+      text-anchor: middle;
+    }
+
+    .ie-highlight {
+      fill: var(--ie-color);
+      font-weight: 900;
+    }
+
+    .text-ending {
+      fill: #ffffff;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-weight: 900;
+      font-size: 17px;
+      dominant-baseline: central;
+      text-anchor: middle;
+      transition: opacity 0.25s ease;
+    }
+
+    .text-hidden {
+      opacity: 0;
+    }
+
+    .audio-btn {
+      background: #e2e8f0;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .audio-btn:hover {
+      background-color: #facc15;
+      transform: scale(1.1);
+    }
+
+    @media (max-width: 900px) {
+      .main-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="concept-header">
+    <div class="concept-title">GRUPO 1: VERBOS IRREGULARES</div>
+    <div class="concept-rule">
+      Cambio Vocálico: Cambia la <span>E</span> por <span>IE</span> en la raíz (excepto en Nosotros y Vosotros)
+    </div>
+  </div>
+
+  <div class="main-layout">
+    
+    <div class="box-container">
+      <div class="box-header">📦 CAJA DEL GRUPO 1 (Haz clic para girar)</div>
+      <div class="verbs-grid" id="boxVerbs"></div>
+    </div>
+
+    <div class="workspace">
+      <div class="workspace-header">
+        <div class="selected-title" id="selectedVerbTitle">PENSAR</div>
+      </div>
+
+      <div class="conjugation-grid" id="conjugationGrid"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const verbosGrupo1 = [
+      { verbo: "PENSAR", tipo: "AR", raizBase: "pens", prefijo: "p", e_pos: "e", sufijo: "ns", icono: "🧠" },
+      { verbo: "CERRAR", tipo: "AR", raizBase: "cerr", prefijo: "c", e_pos: "e", sufijo: "rr", icono: "🚪" },
+      { verbo: "COMENZAR", tipo: "AR", raizBase: "comenz", prefijo: "com", e_pos: "e", sufijo: "nz", icono: "🏁" },
+      { verbo: "EMPEZAR", tipo: "AR", raizBase: "empez", prefijo: "emp", e_pos: "e", sufijo: "z", icono: "🚀" },
+      { verbo: "ENTENDER", tipo: "ER", raizBase: "entend", prefijo: "ent", e_pos: "e", sufijo: "nd", icono: "💡" },
+      { verbo: "QUERER", tipo: "ER", raizBase: "quer", prefijo: "qu", e_pos: "e", sufijo: "r", icono: "❤️" },
+      { verbo: "PERDER", tipo: "ER", raizBase: "perd", prefijo: "p", e_pos: "e", sufijo: "rd", icono: "🔍" },
+      { verbo: "PREFERIR", tipo: "IR", raizBase: "prefer", prefijo: "pref", e_pos: "e", sufijo: "r", icono: "⭐" },
+      { verbo: "SENTIR", tipo: "IR", raizBase: "sent", prefijo: "s", e_pos: "e", sufijo: "nt", icono: "🎭" },
+      { verbo: "MENTIR", tipo: "IR", raizBase: "ment", prefijo: "m", e_pos: "e", sufijo: "nt", icono: "🤥" },
+      { verbo: "DESPERTAR", tipo: "AR", raizBase: "despert", prefijo: "desp", e_pos: "e", sufijo: "rt", icono: "⏰" }
+    ];
+
+    const pronombres = ["Yo", "Tú", "Él / Ella / Usted", "Nosotros/as", "Vosotros/as", "Ellos / Ellas / Ustedes"];
+
+    const terminaciones = {
+      AR: ["-o", "-as", "-a", "-amos", "-áis", "-an"],
+      ER: ["-o", "-es", "-e", "-emos", "-éis", "-en"],
+      IR: ["-o", "-es", "-e", "-imos", "-ís", "-en"]
+    };
+
+    let selectedVerb = verbosGrupo1[0];
+
+    function renderBox() {
+      const box = document.getElementById('boxVerbs');
+      box.innerHTML = '';
+
+      verbosGrupo1.forEach((v) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'card-wrapper';
+
+        const container = document.createElement('div');
+        container.className = 'card-container' + (v.verbo === selectedVerb.verbo ? ' active' : '');
+
+        container.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front">
+              <span>${v.verbo}</span>
+            </div>
+            <div class="card-back">
+              <span class="card-back-icon">${v.icono}</span>
+              <span class="card-back-text">${v.verbo}</span>
+            </div>
+          </div>
+        `;
+
+        container.onclick = () => {
+          container.classList.toggle('flipped');
+        };
+
+        const selectBtn = document.createElement('button');
+        selectBtn.className = 'select-btn';
+        selectBtn.textContent = 'Conjugar';
+        selectBtn.onclick = (e) => {
+          e.stopPropagation();
+          selectedVerb = v;
+          renderBox();
+          updateConjugation();
+        };
+
+        wrapper.appendChild(container);
+        wrapper.appendChild(selectBtn);
+        box.appendChild(wrapper);
+      });
+    }
+
+    function updateConjugation() {
+      document.getElementById('selectedVerbTitle').textContent = `${selectedVerb.verbo} (-${selectedVerb.tipo})`;
+
+      const grid = document.getElementById('conjugationGrid');
+      grid.innerHTML = '';
+
+      pronombres.forEach((pronombre, i) => {
+        const isNosotrosOrVosotros = (i === 3 || i === 4);
+        const ending = terminaciones[selectedVerb.tipo][i];
+
+        const raizCompleta = isNosotrosOrVosotros ? selectedVerb.raizBase : (selectedVerb.prefijo + "ie" + selectedVerb.sufijo);
+        const fullWord = raizCompleta + ending.replace('-', '');
+
+        const row = document.createElement('div');
+        row.className = 'row';
+
+        let raizSVGHtml = '';
+        if (isNosotrosOrVosotros) {
+          raizSVGHtml = `<tspan class="text-stem">${selectedVerb.raizBase}-</tspan>`;
+        } else {
+          raizSVGHtml = `<tspan class="text-stem">${selectedVerb.prefijo}</tspan>` +
+                        `<tspan class="ie-highlight">ie</tspan>` +
+                        `<tspan class="text-stem">${selectedVerb.sufijo}-</tspan>`;
+        }
+
+        row.innerHTML = `
+          <div class="pronoun">${pronombre}</div>
+          <div class="puzzle-box" onclick="togglePiece(${i})">
+            <svg class="puzzle-svg" width="230" height="45" viewBox="0 0 230 45">
+              <path d="M 5,4 L 110,4 
+                       C 110,13 123,13 123,4 
+                       L 130,4 
+                       A 4,4 0 0,1 134,8 
+                       L 134,16 
+                       C 144,16 144,29 134,29 
+                       L 134,38 
+                       A 4,4 0 0,1 130,42 
+                       L 5,42 
+                       A 4,4 0 0,1 1,38 
+                       L 1,8 
+                       A 4,4 0 0,1 5,4 Z" 
+                    fill="#facc15" stroke="#eab308" stroke-width="2"/>
+              <text x="65" y="23" dominant-baseline="central" text-anchor="middle">${raizSVGHtml}</text>
+
+              <path d="M 130,4 L 220,4 
+                       A 4,4 0 0,1 224,8 
+                       L 224,38 
+                       A 4,4 0 0,1 220,42 
+                       L 130,42 
+                       A 4,4 0 0,1 126,38 
+                       L 126,29 
+                       C 136,29 136,16 126,16 
+                       L 126,8 
+                       A 4,4 0 0,1 130,4 Z" 
+                    fill="#22c55e" stroke="#15803d" stroke-width="2"/>
+              <text x="175" y="23" class="text-ending text-hidden" id="ending-${i}">${ending}</text>
+            </svg>
+          </div>
+          <button class="audio-btn" title="Escuchar" onclick="speak('${pronombre} ${fullWord}')">🔊</button>
+        `;
+        grid.appendChild(row);
+      });
+    }
+
+    function togglePiece(index) {
+      const endingText = document.getElementById(`ending-${index}`);
+      if(endingText) endingText.classList.toggle('text-hidden');
+    }
+
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-ES';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    renderBox();
+    updateConjugation();
+  </script>
+
+</body>
+</html>
