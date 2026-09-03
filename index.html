@@ -11,8 +11,8 @@
       --box-border: #303f9f;
       --card-bg: #ffffff;
       --text-main: #1f2937;
-      --ie-color: #e53935; /* Rojo para la irregularidad ie */
-      --stem-color: #facc15; /* Raíz amarilla base */
+      --ie-color: #e53935;
+      --stem-color: #facc15;
       --green-piece: #22c55e;
       --green-border: #15803d;
       --pronoun-color: #1565c0;
@@ -32,7 +32,6 @@
       color: #ffffff;
     }
 
-    /* BANNER SUPERIOR CON EL CONCEPTO CLAVE */
     .concept-header {
       background: linear-gradient(135deg, #ff5252, #ff793f);
       border-radius: 16px;
@@ -65,7 +64,6 @@
       text-decoration: underline;
     }
 
-    /* CONTENEDOR PRINCIPAL: CAJA Y ÁREA DE CONJUGACIÓN */
     .main-layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -74,7 +72,6 @@
       margin: 0 auto;
     }
 
-    /* ESTILO DE LA CAJA CONTENEDORA DE VERBOS */
     .box-container {
       background-color: #1e293b;
       border: 4px solid #475569;
@@ -100,39 +97,76 @@
     .verbs-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 15px;
       justify-content: center;
       align-content: flex-start;
     }
 
-    .verb-card {
+    /* TARJETAS CON EFECTO REVERSO (3D FLIP) */
+    .card-container {
+      width: 110px;
+      height: 120px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+      border-radius: 12px;
+    }
+
+    .card-container:hover .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-container.active .card-front,
+    .card-container.active .card-back {
+      border: 3px solid #ff5252;
+      box-shadow: 0 0 12px rgba(255, 82, 82, 0.8);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .card-front {
       background-color: #ffffff;
       color: var(--text-main);
-      padding: 12px 18px;
-      border-radius: 10px;
       font-weight: 800;
-      font-size: 1rem;
-      cursor: pointer;
-      user-select: none;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      font-size: 0.95rem;
       border: 2px solid #cbd5e1;
     }
 
-    .verb-card:hover {
-      transform: scale(1.1) translateY(-3px);
-      background-color: #fef08a;
-      z-index: 5;
+    .card-back {
+      background-color: #ffffff;
+      transform: rotateY(180deg);
+      border: 2px solid #cbd5e1;
+      overflow: hidden;
     }
 
-    .verb-card.active {
-      background-color: #ff793f;
-      color: #ffffff;
-      border-color: #d32f2f;
-      transform: scale(1.05);
+    .card-back img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
     }
 
-    /* ÁREA DE TRABAJO (TABLA DE CONJUGACIÓN) */
     .workspace {
       background-color: var(--card-bg);
       color: var(--text-main);
@@ -178,7 +212,6 @@
       color: var(--pronoun-color);
     }
 
-    /* COMPONENTE INTERACTIVO DE CONJUGACIÓN */
     .puzzle-box {
       cursor: pointer;
     }
@@ -198,7 +231,6 @@
       text-anchor: middle;
     }
 
-    /* Resaltado del cambio E -> IE */
     .ie-highlight {
       fill: var(--ie-color);
       font-weight: 900;
@@ -218,7 +250,6 @@
       opacity: 0;
     }
 
-    /* BOTÓN AUDIO */
     .audio-btn {
       background: #e2e8f0;
       border: none;
@@ -255,7 +286,7 @@
   <div class="main-layout">
     
     <div class="box-container">
-      <div class="box-header">📦 CAJA DEL GRUPO 1 (E ➔ IE)</div>
+      <div class="box-header">📦 CAJA DEL GRUPO 1 (Pasa el ratón para ver la imagen)</div>
       <div class="verbs-grid" id="boxVerbs"></div>
     </div>
 
@@ -270,19 +301,19 @@
   </div>
 
   <script>
-    // Lista completa de verbos del Grupo 1 extraídos de las diapositivas
+    // Se añade la propiedad 'imagen' con imágenes ilustrativas representativas
     const verbosGrupo1 = [
-      { verbo: "PENSAR", tipo: "AR", raizBase: "pens", prefijo: "p", e_pos: "e", sufijo: "ns" },
-      { verbo: "CERRAR", tipo: "AR", raizBase: "cerr", prefijo: "c", e_pos: "e", sufijo: "rr" },
-      { verbo: "COMENZAR", tipo: "AR", raizBase: "comenz", prefijo: "com", e_pos: "e", sufijo: "nz" },
-      { verbo: "EMPEZAR", tipo: "AR", raizBase: "empez", prefijo: "emp", e_pos: "e", sufijo: "z" },
-      { verbo: "ENTENDER", tipo: "ER", raizBase: "entend", prefijo: "ent", e_pos: "e", sufijo: "nd" },
-      { verbo: "QUERER", tipo: "ER", raizBase: "quer", prefijo: "qu", e_pos: "e", sufijo: "r" },
-      { verbo: "PERDER", tipo: "ER", raizBase: "perd", prefijo: "p", e_pos: "e", sufijo: "rd" },
-      { verbo: "PREFERIR", tipo: "IR", raizBase: "prefer", prefijo: "pref", e_pos: "e", sufijo: "r" },
-      { verbo: "SENTIR", tipo: "IR", raizBase: "sent", prefijo: "s", e_pos: "e", sufijo: "nt" },
-      { verbo: "MENTIR", tipo: "IR", raizBase: "ment", prefijo: "m", e_pos: "e", sufijo: "nt" },
-      { verbo: "DESPERTAR", tipo: "AR", raizBase: "despert", prefijo: "desp", e_pos: "e", sufijo: "rt" }
+      { verbo: "PENSAR", tipo: "AR", raizBase: "pens", prefijo: "p", e_pos: "e", sufijo: "ns", imagen: "https://images.unsplash.com/photo-1516534775068-ba3e7458af70?w=200&auto=format&fit=crop&q=80" },
+      { verbo: "CERRAR", tipo: "AR", raizBase: "cerr", prefijo: "c", e_pos: "e", sufijo: "rr", imagen: "https://images.unsplash.com/photo-1558002038-1055907df827?w=200&auto=format&fit=crop&q=80" },
+      { verbo: "COMENZAR", tipo: "AR", raizBase: "comenz", prefijo: "com", e_pos: "e", sufijo: "nz", imagen: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=200&auto=format&fit=crop&q=80" },
+      { verbo: "EMPEZAR", tipo: "AR", raizBase: "empez", prefijo: "emp", e_pos: "e", sufijo: "z", imagen: "https://images.unsplash.com/photo-1517649763962-0c623266ddc0?w=200&auto=format&fit=crop&q=80" },
+      { verbo: "ENTENDER", tipo: "ER", raizBase: "entend", prefijo: "ent", e_pos: "e", sufijo: "nd", imagen: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=200&auto=format&fit=crop&q=80" },
+      { verbo: "QUERER", tipo: "ER", raizBase: "quer", prefijo: "qu", e_pos: "e", sufijo: "r", imagen: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=200&auto=format&fit=crop&q=80" },
+      { verbo: "PERDER", tipo: "ER", raizBase: "perd", prefijo: "p", e_pos: "e", sufijo: "rd", imagen: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=200&auto=format&fit=crop&q=80" },
+      { verbo: "PREFERIR", tipo: "IR", raizBase: "prefer", prefijo: "pref", e_pos: "e", sufijo: "r", imagen: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=200&auto=format&fit=crop&q=80" },
+      { verbo: "SENTIR", tipo: "IR", raizBase: "sent", prefijo: "s", e_pos: "e", sufijo: "nt", imagen: "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=200&auto=format&fit=crop&q=80" },
+      { verbo: "MENTIR", tipo: "IR", raizBase: "ment", prefijo: "m", e_pos: "e", sufijo: "nt", imagen: "https://images.unsplash.com/photo-1509281373149-e957c6296406?w=200&auto=format&fit=crop&q=80" },
+      { verbo: "DESPERTAR", tipo: "AR", raizBase: "despert", prefijo: "desp", e_pos: "e", sufijo: "rt", imagen: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=200&auto=format&fit=crop&q=80" }
     ];
 
     const pronombres = ["Yo", "Tú", "Él / Ella / Usted", "Nosotros/as", "Vosotros/as", "Ellos / Ellas / Ustedes"];
@@ -295,27 +326,35 @@
 
     let selectedVerb = verbosGrupo1[0];
 
-    // Cargar tarjetas dentro de la Caja
     function renderBox() {
       const box = document.getElementById('boxVerbs');
       box.innerHTML = '';
 
       verbosGrupo1.forEach((v) => {
-        const card = document.createElement('div');
-        card.className = 'verb-card' + (v.verbo === selectedVerb.verbo ? ' active' : '');
-        card.textContent = v.verbo;
+        const container = document.createElement('div');
+        container.className = 'card-container' + (v.verbo === selectedVerb.verbo ? ' active' : '');
 
-        card.onclick = () => {
+        container.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front">
+              <span>${v.verbo}</span>
+            </div>
+            <div class="card-back">
+              <img src="${v.imagen}" alt="${v.verbo}" loading="lazy">
+            </div>
+          </div>
+        `;
+
+        container.onclick = () => {
           selectedVerb = v;
           renderBox();
           updateConjugation();
         };
 
-        box.appendChild(card);
+        box.appendChild(container);
       });
     }
 
-    // Dibujar el tablero de conjugación con los cambios E -> IE
     function updateConjugation() {
       document.getElementById('selectedVerbTitle').textContent = `${selectedVerb.verbo} (-${selectedVerb.tipo})`;
 
@@ -323,17 +362,15 @@
       grid.innerHTML = '';
 
       pronombres.forEach((pronombre, i) => {
-        const isNosotrosOrVosotros = (i === 3 || i === 4); // Nosotros (3) y Vosotros (4) NO cambian
+        const isNosotrosOrVosotros = (i === 3 || i === 4);
         const ending = terminaciones[selectedVerb.tipo][i];
 
-        // Construir la palabra hablada completa para la función audio
         const raizCompleta = isNosotrosOrVosotros ? selectedVerb.raizBase : (selectedVerb.prefijo + "ie" + selectedVerb.sufijo);
         const fullWord = raizCompleta + ending.replace('-', '');
 
         const row = document.createElement('div');
         row.className = 'row';
 
-        // Representación visual de la raíz con cambio de color en IE
         let raizSVGHtml = '';
         if (isNosotrosOrVosotros) {
           raizSVGHtml = `<tspan class="text-stem">${selectedVerb.raizBase}-</tspan>`;
@@ -396,7 +433,6 @@
       }
     }
 
-    // Inicialización
     renderBox();
     updateConjugation();
   </script>
